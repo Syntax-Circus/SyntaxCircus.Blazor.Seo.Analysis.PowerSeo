@@ -27,7 +27,7 @@ public sealed class MappingTests
     }
     [Fact] public void Malformed_or_excessive_results_fail_closed()
     {
-        foreach(var response in new[]{Response(new RawAssessment("word-complexity","unknown",0,"Bad.")),Response() with {Assessments=null!},Response(new RawAssessment("word-complexity","poor",double.NaN,"Bad.")),Response(new RawAssessment("word-complexity","poor",0,new string('x',2001)))})
+        foreach(var response in new[]{Response(),Response(new RawAssessment("word-complexity","unknown",0,"Bad.")),Response() with {Assessments=null!},Response(new RawAssessment("word-complexity","poor",double.NaN,"Bad.")),Response(new RawAssessment("word-complexity","poor",0,new string('x',2001)))})
             Assert.Equal(CoverageState.Failed,PowerSeoResultMapper.Map(response,"request","snapshot").State);
     }
     [Theory] [InlineData(0)] [InlineData(-1)] [InlineData(61)]

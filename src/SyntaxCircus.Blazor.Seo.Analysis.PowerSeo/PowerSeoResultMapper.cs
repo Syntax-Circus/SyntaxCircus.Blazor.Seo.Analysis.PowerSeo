@@ -22,7 +22,7 @@ internal static class PowerSeoResultMapper
             "Unavailable" => CoverageState.Unavailable, _ => CoverageState.Failed
         };
         if (state != CoverageState.Complete) return Empty(state, "Browser companion did not complete.");
-        if (response.Assessments is null || response.Assessments.Length > MaximumAssessments ||
+        if (response.Assessments is null || response.Assessments.Length is 0 or > MaximumAssessments ||
             response.Assessments.Any(x => x is null || string.IsNullOrWhiteSpace(x.Id) || x.Id.Length > MaximumIdCharacters ||
                 x.Description is null || x.Description.Length > MaximumMessageCharacters || !double.IsFinite(x.Score) ||
                 x.Status is not ("good" or "na" or "ok" or "poor")))
