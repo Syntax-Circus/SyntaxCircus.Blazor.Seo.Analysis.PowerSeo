@@ -1,0 +1,12 @@
+FROM node:24-bookworm-slim AS node
+FROM mcr.microsoft.com/dotnet/sdk:10.0.401
+COPY --from=node /usr/local/ /usr/local/
+WORKDIR /work
+COPY . .
+RUN npm ci --ignore-scripts
+RUN npm audit --audit-level=moderate && npm test
+RUN dotnet test -c Release -p:DisableGitVersionTask=true
+RUN dotnet pack src/SyntaxCircus.Blazor.Seo.Analysis.PowerSeo -c Release -p:DisableGitVersionTask=true -p:Version=0.0.0-linux-qualification -o artifacts/feed
+RUN dotnet build samples/BlazorHost -c Release -p:PowerSeoPackageVersion=0.0.0-linux-qualification -p:RestoreAdditionalProjectSources=/work/artifacts/feed
+RUN npx playwright install --with-deps chromium
+RUN node scripts/run-browser.mjs

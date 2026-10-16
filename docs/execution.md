@@ -22,6 +22,10 @@ Task2 scoped workers: complete. Seven JS cases observed six missing-behavior fai
 
 Selected worker measurement before lifecycle integration:11,387 minified bytes/4,422 gzip; bridge2,228 bytes. Shipping graph is only @power-seo/core and @power-seo/content-analysis1.0.19, both MIT. Full dev npm audit reports zero. Final measurements will be refreshed after review.
 
-Task3 C# lifecycle: in progress.
+Task3 C# lifecycle: complete (2fc6f7b).20 .NET tests pass, including lazy initialization, prerender retry, caller cancellation, provider deadline, capacity, shared initialization waiters and late-reference disposal. Test compilation corrections were harness fixes, not product RED evidence. Empty Ready assessments were separately reproduced RED then rejected GREEN.
 
-No production support, published package, passing adapter test count or measured browser payload is claimed. Existing experiment results describe the older broad Power bundle, not this proposed three-check adapter.
+Task4 packaged consumers: implementation and owned-corpus qualification complete; final review and PR checks pending. Actual NuGet consumers pass Server/WASM under root/subpath and self-only script/worker CSP. Owned24 retain baseline24/24 in each mode, with5 eligible editorials and15 raw assessments. Browser failure, stale, timeout and unavailable states preserve baseline. Active rewrite cancellation terminates workers and publishes the latest generation. Windows/Linux20 .NET and8 JS tests pass; npm audit zero vulnerabilities.
+
+Sample middleware routing under a path base was reproduced failing Blazor negotiation and corrected with explicit UseRouting after UsePathBase. Concurrent Playwright mouse clicks raced each other; clicks are now sequential while requests remain independent. Neither was an adapter-engine defect. Qualification evidence is in docs/qualification.md.
+
+No published release or Puppies Plus production integration is claimed. Existing broad-engine experiment measurements are separate.

@@ -1,0 +1,96 @@
+name: Build
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: ['**']
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm audit --audit-level=moderate
+      - run: npm test
+      - run: dotnet test -c Release
+      - name: Pack and build actual package consumers
+        shell: pwsh
+        run: |
+          dotnet pack src/SyntaxCircus.Blazor.Seo.Analysis.PowerSeo -c Release -p:DisableGitVersionTask=true -p:Version=0.0.0-qualification -o artifacts/feed
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          dotnet build samples/BlazorHost -c Release -p:PowerSeoPackageVersion=0.0.0-qualification -p:RestoreAdditionalProjectSources="$env:GITHUB_WORKSPACE/artifacts/feed"
+          exit $LASTEXITCODE
+      - run: npx playwright install --with-deps chromium
+      - run: node scripts/run-browser.mjs
+      - name: Retain qualification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qualification-${{ matrix.os }}
+          path: |
+            artifacts/browser*.json
+            artifacts/bundle.json
+            artifacts/sample*.log
+      - name: Pack release
+        if: matrix.os == 'ubuntu-latest' && github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: dotnet pack src/SyntaxCircus.Blazor.Seo.Analysis.PowerSeo -c Release -o artifacts
+      - name: Upload package artifact
+        if: matrix.os == 'ubuntu-latest' && github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-package
+          path: artifacts/*.*nupkg
+          retention-days: 7
+  publish:
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+      - uses: actions/download-artifact@v8
+        with:
+          name: nuget-package
+          path: artifacts
+      - name: NuGet login
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+      - name: Publish to NuGet
+        run: dotnet nuget push artifacts/*.nupkg --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      - name: Tag published version
+        shell: bash
+        run: |
+          package_path=$(find artifacts -maxdepth 1 -type f -name '*.nupkg' ! -name '*.snupkg' | head -n 1)
+          test -n "$package_path"
+          package_name=$(basename "$package_path")
+          version=${package_name#SyntaxCircus.Blazor.Seo.Analysis.PowerSeo.}
+          version=${version%.nupkg}
+          tag="v$version"
+          if git ls-remote --tags origin "refs/tags/$tag" | grep -q .; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag "$tag" "$GITHUB_SHA"
+          git push origin "$tag"
+
