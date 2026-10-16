@@ -1,0 +1,17 @@
+{
+  "name": "syntaxcircus-blazor-seo-analysis-powerseo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test js/tests/*.test.mjs",
+    "browser": "node scripts/browser.mjs"
+  },
+  "dependencies": {
+    "@power-seo/content-analysis": "1.0.19"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "playwright": "1.64.1"
+  }
+}
