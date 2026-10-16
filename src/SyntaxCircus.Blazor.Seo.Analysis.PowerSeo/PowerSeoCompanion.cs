@@ -55,6 +55,7 @@ public sealed class PowerSeoCompanion : ISeoCompanion, IAsyncDisposable
             Task initialization;
             lock (_gate)
             {
+                _lifetime.Token.ThrowIfCancellationRequested();
                 if (_initialization is { IsFaulted: true } or { IsCanceled: true }) _initialization = null;
                 initialization = _initialization ??= InitializeAsync();
             }
@@ -101,9 +102,12 @@ public sealed class PowerSeoCompanion : ISeoCompanion, IAsyncDisposable
     {
         Task idle;
         Task? initialization;
-        lock (_gate) { _disposed = true; idle = _idle.Task; initialization = _initialization; }
+        lock (_gate) { _disposed = true; idle = _idle.Task; }
         _lifetime.Cancel();
         await idle.ConfigureAwait(false);
+        // Active callers have now published any initialization they started, including
+        // reentrant disposal during import before the task assignment completed.
+        lock (_gate) initialization = _initialization;
         if (initialization is not null)
         {
             try { await initialization.ConfigureAwait(false); }

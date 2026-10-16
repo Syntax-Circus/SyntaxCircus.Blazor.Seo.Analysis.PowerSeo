@@ -24,8 +24,20 @@ Selected worker measurement before lifecycle integration:11,387 minified bytes/4
 
 Task3 C# lifecycle: complete (2fc6f7b).20 .NET tests pass, including lazy initialization, prerender retry, caller cancellation, provider deadline, capacity, shared initialization waiters and late-reference disposal. Test compilation corrections were harness fixes, not product RED evidence. Empty Ready assessments were separately reproduced RED then rejected GREEN.
 
-Task4 packaged consumers: implementation and owned-corpus qualification complete; final review and PR checks pending. Actual NuGet consumers pass Server/WASM under root/subpath and self-only script/worker CSP. Owned24 retain baseline24/24 in each mode, with5 eligible editorials and15 raw assessments. Browser failure, stale, timeout and unavailable states preserve baseline. Active rewrite cancellation terminates workers and publishes the latest generation. Windows/Linux20 .NET and8 JS tests pass; npm audit zero vulnerabilities.
+Task4 packaged consumers: implementation, independent review/fix and corpus qualification complete; PR readiness follows the external CI gate. Actual NuGet consumers pass Server/WASM under root/subpath and self-only script/worker CSP. Owned24 retain baseline24/24 in each mode, with5 eligible editorials and15 raw assessments. Browser failure, stale, timeout and unavailable states preserve baseline. Active rewrite cancellation terminates workers and publishes the latest generation. Final Windows/Linux21 .NET and8 JS tests pass; npm and NuGet audits report no known vulnerable packages.
 
 Sample middleware routing under a path base was reproduced failing Blazor negotiation and corrected with explicit UseRouting after UsePathBase. Concurrent Playwright mouse clicks raced each other; clicks are now sequential while requests remain independent. Neither was an adapter-engine defect. Qualification evidence is in docs/qualification.md.
 
 No published release or Puppies Plus production integration is claimed. Existing broad-engine experiment measurements are separate.
+
+Retained34 qualification: real packaged Server/WASM at root and /demo preserve baseline34/34;19 general pages NotApplicable,15 editorials Complete and45 raw checks accounted for per mode. Initial whole-corpus fixture loading through Server JS interop exceeded SignalR's default input limit and timed out; the sample now loads fixtures through its loopback endpoint directly on Server and fetches in WASM. Actual worker results remain bounded before SignalR. Public article bodies remain ignored.
+
+Final review: independent fresh-context reviewer inspected the full branch, reran20 .NET/8 JS tests and inspected the local NuGet. One Important finding: disposal captured initialization before active callers published it. Reproduced with Disposal_during_import_publication_observes_late_references RED (late references not disposed), then fixed by preventing new initialization after cancellation and observing initialization after callers drain. Full Windows suite21/21 GREEN.
+
+Final: minor (deferred): cold initialization latency is not separately measured; existing performance evidence is explicitly after module warmup.
+
+Final: Ruling: broad linguistic accuracy, other browsers/CSP policies and disconnected-circuit recovery remain outside this increment and are explicitly excluded from support claims; cost if wrong is additional host qualification before deployment.
+
+Final: Ruling: release-account setup remains the owner's configured trusted-publishing environment and cannot be proven without a release; workflow follows sibling conventions and is linted. Cost if configuration differs is a release-job correction after merge, not a runtime/package change.
+
+Ruling: existing push/PR authorization and the approved end-to-end plan select finishing by updating PR1 and marking ready after checks, without merging or publishing. Cost if wrong is reversible PR readiness.

@@ -14,6 +14,9 @@ app.Use(async (context, next) =>
 });
 app.UseAntiforgery();
 app.MapStaticAssets();
+app.MapGet("/qualification-fixtures", async () => Results.Text(
+    await File.ReadAllTextAsync(builder.Configuration["CORPUS_INPUT"] ?? Path.Combine(app.Environment.WebRootPath, "fixtures.json")),
+    "application/json"));
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode().AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(BlazorClient.Editor).Assembly);
 app.Run();

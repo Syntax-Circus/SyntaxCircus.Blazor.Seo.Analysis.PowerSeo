@@ -8,6 +8,7 @@ public partial class Probe
 {
     [Inject] private PowerSeoCompanion Companion { get; set; } = null!;
     [Inject] private IJSRuntime JS { get; set; } = null!;
+    [Inject] private NavigationManager Navigation { get; set; } = null!;
 private bool _interactive;
     private string _result = "Waiting";
     protected override void OnAfterRender(bool firstRender)
@@ -17,7 +18,11 @@ private bool _interactive;
     private async Task Run()
     {
         _result = "Running";
-        var json = await JS.InvokeAsync<string>("sampleFixtures");
+        // Server reads fixtures directly instead of returning a whole corpus through SignalR.
+        using var http = new HttpClient();
+        var json = OperatingSystem.IsBrowser()
+            ? await JS.InvokeAsync<string>("sampleFixtures")
+            : await http.GetStringAsync(new Uri(new Uri(Navigation.BaseUri), "qualification-fixtures"));
         var inputs = JsonSerializer.Deserialize<SeoDocumentInput[]>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         var analyzer = new ContentSeoAnalyzer();
         var results = new List<object>();

@@ -8,8 +8,6 @@ const evidence = [];
 try {
   for (const mode of ['server', 'wasm']) {
     const context = await browser.newContext();
-    if (process.env.CORPUS_INPUT)
-      await context.route('**/fixtures.json', async route => route.fulfill({ contentType: 'application/json', body: await readFile(process.env.CORPUS_INPUT, 'utf8') }));
     const errors = [], violations = [], external = [];
     await context.addInitScript(() => {
       window.sampleWorkers = { started: 0, active: 0, peak: 0 };

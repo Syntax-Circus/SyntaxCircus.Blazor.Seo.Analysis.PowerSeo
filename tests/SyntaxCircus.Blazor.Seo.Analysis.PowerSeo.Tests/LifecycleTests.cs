@@ -82,6 +82,23 @@ public sealed class LifecycleTests
         js.ImportDelay.SetResult();await disposal;
         Assert.Equal(CoverageState.Unavailable,(await pending).State);Assert.True(js.Disposed);
     }
+    [Fact] public async Task Disposal_during_import_publication_observes_late_references()
+    {
+        var js=new Runtime{ImportDelay=new(TaskCreationOptions.RunContinuationsAsynchronously)};
+        var companion=new PowerSeoCompanion(js);
+        Task? disposal=null;
+        js.OnImport=()=>disposal=companion.DisposeAsync().AsTask();
+        var pending=companion.AnalyzeAsync(Snapshot());
+        Assert.Equal(CoverageState.Unavailable,(await pending).State);
+        try
+        {
+            Assert.NotNull(disposal);
+            Assert.False(disposal.IsCompleted);
+        }
+        finally { js.ImportDelay.SetResult(); }
+        await disposal!;
+        Assert.True(js.Disposed);
+    }
     [Fact] public void Registration_preserves_existing_companions_and_does_no_js_work()
     {
         Microsoft.Extensions.DependencyInjection.IServiceCollection services=new Microsoft.Extensions.DependencyInjection.ServiceCollection();
@@ -95,10 +112,11 @@ public sealed class LifecycleTests
         internal int Imports,Cancels;internal bool Prerender,Hold,Fail,Disposed;
         internal TaskCompletionSource Started=new(TaskCreationOptions.RunContinuationsAsynchronously);
         internal TaskCompletionSource? ImportDelay;
+        internal Action? OnImport;
         public ValueTask<T> InvokeAsync<T>(string identifier,object?[]? args)=>InvokeAsync<T>(identifier,CancellationToken.None,args);
         public ValueTask<T> InvokeAsync<T>(string identifier,CancellationToken token,object?[]? args)
         {
-            if(identifier=="import"){Imports++;if(Prerender)throw new InvalidOperationException("prerender");return ImportDelay is null ? ValueTask.FromResult((T)(object)this) : new(WaitImport<T>(token));}
+            if(identifier=="import"){Imports++;OnImport?.Invoke();if(Prerender)throw new InvalidOperationException("prerender");return ImportDelay is null ? ValueTask.FromResult((T)(object)this) : new(WaitImport<T>(token));}
             if(identifier=="createSession")return ValueTask.FromResult((T)(object)this);
             if(identifier=="cancel"){Cancels++;return ValueTask.FromResult(default(T)!);}
             if(identifier=="dispose"){Disposed=true;return ValueTask.FromResult(default(T)!);}
