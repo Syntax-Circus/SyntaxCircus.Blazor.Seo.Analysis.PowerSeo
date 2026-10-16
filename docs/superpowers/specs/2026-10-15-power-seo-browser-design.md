@@ -1,6 +1,6 @@
 # Power SEO browser companion design
 
-Date: 2026-10-15. Status: ready for owner review. Engine, package name, browser worker approach and restrained initial checks were approved in conversation.
+Date: 2026-10-15. Status: owner approved with “ok, then do so.” Engine, package name, browser worker approach and restrained initial checks are approved.
 
 ## Goal and boundaries
 

@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <PowerSeoPackageVersion Condition="'$(PowerSeoPackageVersion)' == ''">0.1.0</PowerSeoPackageVersion>
+  </PropertyGroup>
+</Project>

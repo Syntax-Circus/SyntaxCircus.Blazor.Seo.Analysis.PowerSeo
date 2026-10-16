@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <PackageId>SyntaxCircus.Blazor.Seo.Analysis.PowerSeo</PackageId>
+    <Description>Browser-local Power SEO writing companion for SyntaxCircus SEO analysis.</Description>
+    <Authors>Syntax Circus LLC</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>blazor;seo;content;readability;web-worker</PackageTags>
+    <RepositoryUrl>https://github.com/Syntax-Circus/SyntaxCircus.Blazor.Seo.Analysis.PowerSeo</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Syntax-Circus/SyntaxCircus.Blazor.Seo.Analysis.PowerSeo</PackageProjectUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="SyntaxCircus.Seo.Analysis"/>
+    <PackageReference Include="Microsoft.JSInterop"/>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
+    <PackageReference Include="GitVersion.MsBuild" PrivateAssets="all"/>
+    <InternalsVisibleTo Include="SyntaxCircus.Blazor.Seo.Analysis.PowerSeo.Tests"/>
+    <None Include="../../README.md" Pack="true" PackagePath="/"/>
+    <None Include="../../LICENSE" Pack="true" PackagePath="/"/>
+    <None Include="../../THIRD-PARTY-NOTICES.txt" Pack="true" PackagePath="/"/>
+  </ItemGroup>
+</Project>
