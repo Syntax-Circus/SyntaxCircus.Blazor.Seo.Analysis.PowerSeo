@@ -1,0 +1,13 @@
+@implements IAsyncDisposable
+<section data-editor="@Name">
+<h2>@Name</h2>
+<label>Article <textarea aria-label="@Name article" value="@_text" @oninput="Changed"></textarea></label>
+<button disabled="@(!_interactive)" @onclick="Analyze">Check writing</button>
+<p role="status">@_status</p>
+@if (_report is not null)
+{
+<p data-coverage>@string.Join(", ", _report.Coverage.Select(x => x.State.ToString()))</p>
+<details><summary>Checked draft</summary><output data-checked-text>@_checkedText</output></details>
+<ul>@foreach (var finding in _report.Findings) { <li>@finding.Message</li> }</ul>
+}
+</section>
