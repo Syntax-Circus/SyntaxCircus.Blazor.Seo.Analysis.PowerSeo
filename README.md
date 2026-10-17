@@ -7,7 +7,13 @@
 
 MIT browser companion for `SyntaxCircus.Seo.Analysis`, using three selected Power SEO checks in a self-hosted Web Worker. Supports interactive Blazor Server and WebAssembly.
 
-The initial implementation is awaiting review and its first NuGet release. The Tests badge tracks the workflow's test gates. See [qualification evidence](docs/qualification.md) and [execution status](docs/execution.md).
+The package is published on nuget.org (v0.1.0):
+
+```sh
+dotnet add package SyntaxCircus.Blazor.Seo.Analysis.PowerSeo
+```
+
+The Tests badge tracks the workflow's test gates. See [qualification evidence](docs/qualification.md) and [execution status](docs/execution.md).
 
 Checks: subheading distribution, transition words and word complexity. Only English editorial snapshots qualify. General pages return NotApplicable; other languages return UnsupportedLanguage. The core retains baseline ownership and applicability. Raw statuses and numeric values remain diagnostics; this package provides no overall authoring score or search ranking prediction.
 
